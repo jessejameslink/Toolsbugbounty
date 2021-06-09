@@ -1,0 +1,5 @@
+#!/bin/bash
+wordlist="$1"
+for url in $(cat $wordlist);
+do curl -i -H "X-Forwarded-for: evil.com" $url -s | grep -E -q "<Code>evil.com</Code>|<li>Code: evil.com</li>" && echo -e "\e[32mCACHE POISONING\e[0m $url" || echo -e "\e[31mSubdomain takeover is not possible\e[0m";done
+
