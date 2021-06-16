@@ -22,16 +22,10 @@ echo -e "     ./Apimapssearch dominio     "
 echo -e
 echo -e
 
-#oldIFS=$IFS 
-#IFS=$'\n'
-#domain="$1"
-#wordlist=$2"
-#Renewlist=$(rm xssvalid.txt xssinvalid.txt)
-#xssvalid=$(touch xssvalid.txt)
-#xssinvalid=$(touch xssinvalid.txt)
+domain="$1"
 
 
-#subfinder -d $domain -silent | httpx -silent -threads 1000 | xargs -I@ sh -c 'findomain-linux -t @ -q | httpx -mc 200 -silent | anew | waybackurls | anew subdominiosapi.txt'
+subfinder -d $domain -silent | httpx -silent -threads 1000 | xargs -I@ sh -c 'findomain-linux -t @ -q | httpx -mc 200 -silent | anew | waybackurls | anew subdominiosapi.txt'
 
 for payload in $(cat subdominiosapi.txt) ;do HTTP_CODE=$(curl -s $payload  | grep -Eoi  "AIzaSy[0-9A-Za-z_-]{33}" )
 
@@ -44,11 +38,6 @@ if ["$HTTP_CODE"];then
    else
 if
 done
-#var6=$(cat xssvalid.txt | aquatone)
-#var3=$(wc -l xssvalid.txt)
-#var4=$(wc -l xssinvalid.txt)
-#echo -e
-#echo -e Were found XSS VALID \e[36m${var3}\e[0m  XSS INVALID \e[36m${var4}\e[0m"
 
 
-#IFS=$old_IFS 
+
