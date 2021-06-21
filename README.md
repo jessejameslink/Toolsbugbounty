@@ -2,6 +2,11 @@
 Repositorio com ferramentas para Bugbounty
 
 # Apimapssearch
+
+Agradecimentos
+https://github.com/ozguralp/gmapsapiscanner
+
+
 Apimapssearch é uma tool para procurar api do google maps usando subdominios.
 A ferramenta funciona da seguinte forma ela verifica os subdominios depois as urls dele e ve se tem a api na pagina usando regex depois manda para outra tool que valida se a api é paga ou free.
 *Pode ocorrer falsos positivos.
