@@ -2,6 +2,14 @@
 echo -e
 echo -e
 echo -e
+echo ":::'###::::'########::'####:'##::::'##::::'###::::'########:::'######:::'######::'########::::'###::::'########:::'######::'##::::'##:";
+echo "::'## ##::: ##.... ##:. ##:: ###::'###:::'## ##::: ##.... ##:'##... ##:'##... ##: ##.....::::'## ##::: ##.... ##:'##... ##: ##:::: ##:";
+echo ":'##:. ##:: ##:::: ##:: ##:: ####'####::'##:. ##:: ##:::: ##: ##:::..:: ##:::..:: ##::::::::'##:. ##:: ##:::: ##: ##:::..:: ##:::: ##:";
+echo "'##:::. ##: ########::: ##:: ## ### ##:'##:::. ##: ########::. ######::. ######:: ######:::'##:::. ##: ########:: ##::::::: #########:";
+echo " #########: ##.....:::: ##:: ##. #: ##: #########: ##.....::::..... ##::..... ##: ##...:::: #########: ##.. ##::: ##::::::: ##.... ##:";
+echo " ##.... ##: ##::::::::: ##:: ##:.:: ##: ##.... ##: ##::::::::'##::: ##:'##::: ##: ##::::::: ##.... ##: ##::. ##:: ##::: ##: ##:::: ##:";
+echo " ##:::: ##: ##::::::::'####: ##:::: ##: ##:::: ##: ##::::::::. ######::. ######:: ########: ##:::: ##: ##:::. ##:. ######:: ##:::: ##:";
+echo "..:::::..::..:::::::::....::..:::::..::..:::::..::..::::::::::......::::......:::........::..:::::..::..:::::..:::......:::..:::::..::";
 echo -e
 echo -e
 printf "Author: Kaue Navarro\n"
@@ -19,17 +27,22 @@ domain="$1"
 
 subfinder -d $domain -silent | httpx -silent -threads 1000 | xargs -I@ sh -c 'findomain-linux -t @ -q | httpx -mc 200 -silent | anew | waybackurls | anew subdominiosapi.txt'
 
-for payload in $(cat subdominiosapi.txt) ;do HTTP_CODE=$(curl -s $payload  | grep -Eoi  "AIzaSy[0-9A-Za-z_-]{33}" )
+sleep 5
+for payload in $(cat subdominiosapi.txt) ;do api=$(curl -s $payload  | grep -Eoi  "AIzaSy[0-9A-Za-z_-]{33}" )
 
-var="$payload.$HTTP_CODE"
+if [ "$api" == "" ];
+ then
+echo -e "Api null $payload"
+else
+varapi=$("$payload-$api")
 
-echo "$var"
-if ["$HTTP_CODE"];then
-    
-   var=$(./gmapsapiscanner/python3 maps_api_scanner_python3.py --api-key $HTTP_CODE)
-   else
-if
+python3 maps_api_scanner_python3.py --api-key $api
+
+read -p "Continue (y/n)?" CONT
+if [ "$CONT" = "y" ]; then
+echo""
+else
+exit
+fi
+fi
 done
-
-
-
