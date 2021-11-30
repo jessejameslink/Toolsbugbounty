@@ -1,0 +1,39 @@
+id: kaue-xss-blogsearch
+
+info:
+  name: kauexssblogsearch
+  author: kauenavarro
+  severity: medium
+  description: Procura por respostas refletidas.
+  tags: xss
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/blogsearch?q=OnMoUsEoVeR=prompt(/kauenavarroxss/)//"
+    
+    redirects: true
+    max-redirects: 1
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "OnMoUsEoVeR=prompt(/kauenavarroxss/)//"
+        part: body
+        condition: or
+
+      - type: word
+        words:
+          - "text/html"
+        part: header
+
+      - type: word
+        words:
+          - "<title>Access Denied</title>"
+          - "You don't have permission to access"
+        part: body
+        condition: and
+        negative: true
+
+      - type: status
+        status:
+          - 200

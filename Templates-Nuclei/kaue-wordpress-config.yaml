@@ -1,0 +1,21 @@
+id: kaue-wordpress-config
+
+info:
+  name: kaue-wordpress-config
+  author: kauenavarro
+  severity: high
+  description: Procura por arquivo de configuração do wordpress.
+  
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/wp-config.php.bkp"
+      - "{{BaseURL}}/wp-content/wp-config.php.bkp"
+
+    matchers:
+      - type: word
+        words:
+          - "define( 'WP_CACHE', true );"
+
+        status:
+          - 200

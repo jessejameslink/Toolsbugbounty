@@ -1,0 +1,22 @@
+id: cache-poisoning-seizing
+
+info:
+  name: Cache Poisoning Seizing
+  author: kauenavarro
+  severity: medium
+
+requests:
+  - raw:
+      - |
+        GET /?kauecache=9 HTTP/1.1
+        Host: {{Hostname}}
+        X-Host: peaksolucoes.com
+      - |
+        GET /?kauecache=9 HTTP/1.1
+      - |
+        GET /?kauecache=9 HTTP/1.1
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, "peaksolucoes.com") == true'

