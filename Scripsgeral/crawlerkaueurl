@@ -1,0 +1,125 @@
+#!/bin/bash
+alvo="$1"
+alvo2=$(echo "$alvo" | cut -d "/" -f3);
+
+if [ -d "$alvo2" ];then
+exit 0
+else
+
+mkdir `echo "$alvo" | cut -d "/" -f3`
+cd `echo "$alvo" | cut -d "/" -f3`
+
+
+sleep 2;
+
+echo -e
+echo -e
+echo "Stage recon urls"
+echo -e
+echo -e
+
+
+
+
+#waybackurls
+echo $alvo | waybackurls | anew stageurl1;
+sleep 2;
+#gau
+#echo $alvo  | gauplus | anew stageurl2;
+#sleep 2;
+#otxurls
+echo $alvo  | otxurls | anew stageurl3;
+sleep 2;
+#echo -e
+#echo -e
+#NUCLEI
+echo $alvo | nuclei -t headless/extract-urls.yaml -headless -silent | grep -E "^$1" | anew stageurl5
+sleep 2;
+#echo -e
+#echo -e
+#echo $alvo | cariddi -intensive -ot stageurl6
+#echo "etapa cariddi" 
+cat stageurl* |  egrep -iv ".(jpg|jpeg|gif|css|tif|tiff|png|ttf|woff|woff2|ico|pdf|svg|txt|js)" |  anew urlscomplete
+sleep 2;
+echo "Recon the Urls finish! - Were found $varfinish"
+
+#stage gf
+
+mkdir gfsurls
+sleep 3;
+echo -e
+echo "Loading gf..."
+sleep 2;
+cat urlscomplete | gf aws-keys | anew gfsurls/saidaaws-keys.txt
+sleep 2;
+cat urlscomplete | gf cors | anew gfsurls/saidacors.txt
+sleep 2;
+cat urlscomplete | gf debug_logic| anew gfsurls/saidadebug_logic.txt
+sleep 2;
+cat urlscomplete | gf debug-pages  | anew gfsurls/saidadebug-pages .txt
+sleep 2;
+cat urlscomplete | gf go-functions | anew gfsurls/aidago-functions.txt
+sleep 2;
+cat urlscomplete | gf http-auth | anew gfsurls/saidahttp-auth.txt
+sleep 2;
+cat urlscomplete | gf idor | anew gfsurls/saidaidor.txt
+sleep 2;
+cat urlscomplete | gf img-traversal | anew gfsurls/saidaimg-traversal.txt
+sleep 2;
+cat urlscomplete | gf interestingEXT | anew gfsurls/saidainterestingEXT.txt
+sleep 2;
+cat urlscomplete | gf interestingparams | anew gfsurls/saidainterestingparams.txt
+sleep 2;
+cat urlscomplete | gf interestingsubs | anew gfsurls/saidainterestingsubs.txt
+sleep 2;
+cat urlscomplete | gf json-sec | anew gfsurls/saidajson-sec.txt
+sleep 2;
+cat urlscomplete | gf jsvar | anew gfsurls/saidajsvar.txt
+sleep 2;
+cat urlscomplete | gf  lfi  | anew gfsurls/saidalfi .txt
+sleep 2;
+cat urlscomplete | gf meg-headers | anew gfsurls/saidameg-headers.txt
+sleep 2;
+cat urlscomplete | gf php-curl | anew gfsurls/saidaphp-curl.txt
+sleep 2;
+cat urlscomplete | gf php-errors  | anew gfsurls/saidaphp-errors.txt
+sleep 2;
+cat urlscomplete | gf php-serialized | anew gfsurls/saidaphp-serialized.txt
+sleep 2;
+cat urlscomplete | gf  php-sinks | anew gfsurls/saidaphp-sinks.txt
+sleep 2;
+cat urlscomplete | gf php-sources | anew gfsurls/saidaphp-sources.txt
+sleep 2;
+cat urlscomplete | gf rce | anew gfsurls/saidarce.txt
+sleep 2;
+cat urlscomplete | gf redirect | anew gfsurls/saidaredirects.txt
+sleep 2;
+cat urlscomplete | gf s3-buckets | anew gfsurls/saidas3-buckets.txt
+sleep 2;
+cat urlscomplete | gf servers | anew gfsurls/saidaservers.txt
+sleep 2;
+cat urlscomplete | gf sqli | anew gfsurls/saidasqli.txt
+sleep 2;
+cat urlscomplete | gf ssrf | anew gfsurls/saidassrf.txt
+sleep 2;
+cat urlscomplete | gf ssti | anew gfsurls/saidassti.txt
+sleep 2;
+cat urlscomplete | gf upload-fields | anew gfsurls/saidaupload-fields.txt
+sleep 2;
+cat urlscomplete | gf takeovers | anew gfsurls/saidatakeovers.txt
+sleep 2;
+cat urlscomplete | gf xss | anew gfsurls/saidaxss.txt
+sleep 2;
+cat urlscomplete | gf sqlikaue | anew gfsurls/saidasqlikaue.txt
+sleep 2;
+cat urlscomplete | grep "utm_" | anew gfsurls/utmxss.txt
+sleep 2;
+#Stage GFS - completed
+echo "Stage GFS - completed"
+echo -e
+sleep 2;
+
+
+cd ..
+
+fi

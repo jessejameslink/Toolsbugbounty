@@ -1,0 +1,9 @@
+GET /locations/north-carolina/pelham HTTP/1.1
+Referer: 
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4512.0 Safari/537.36
+Cookie: PSC=UCID=164456fe-8d96-415a-a3d3-a085904da2af&RC.MKT=24024&ST=ca&CTY=albany&Z=; SC=RC.USID=8f7ecdbd-4dd6-4b50-ae73-27d0b0e3f8ee&VA=1025&GEO=True&RC.MKT=24024&ST=ca&CTY=albany&RC.SYS=0&RC.PRIN=0&RC.CORP=99920&L1ID=-1&L2ID=-1&L3ID=-1&L4ID=-1; SC_ANALYTICS_GLOBAL_COOKIE=29e92a34b1d148848675d0ea2a9a7d7b|False; ADRUM_BTa=R:63|g:a9cbbd80-44d0-48a8-8ed8-0a80cb629b24|n:comcast-Xfinity-lower_17e6f84d-6372-4cae-8de2-ceefc1ed60a9; SameSite=None; ADRUM_BT1=R:63|i:727225|e:532; Affiliate=DOT_COM-TEST; Channel=TEST; c_ebiz_compat-prodtest_ch-p_sitecore-int-prodtest-www_1398=KFANJGKC
+X-Requested-With: XMLHttpRequest
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding: gzip,deflate
+Host: compat.api.int.xfinity.com
+Connection: Keep-alive

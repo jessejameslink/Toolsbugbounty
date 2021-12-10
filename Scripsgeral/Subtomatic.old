@@ -1,0 +1,85 @@
+#!/bin/bash
+echo "Loading..."
+sleep 3;
+
+alvo="$1"
+
+#Amass + crt
+amass enum -src -ip -active -brute -d $alvo  -o amass1 ; cat  amass1 | cut -d']' -f 2 | awk '{print $1}' | sort -u >> hosts-amass.txt ; cat  amass1 | cut -d']' -f2 | awk '{print $2}' | tr ',' '\n' | sort -u >> ips-amass.txt ; curl -s "https://crt.sh/?q=%.$alvo&output=json" | jq '.[].name_value' | sed 's/\"//g' | sed 's/\*\.//g' | sort -u >> hosts-crtsh.txt ; sed 's/$/.$alvo/' /home/ferramentas/WORDLISTS/SecLists/Discovery/DNS/dns-Jhaddix.txt >> hosts-wordlist.txt ; cat hosts-amass.txt hosts-crtsh.txt hosts-wordlist.txt | sort -u >> hosts-all.txt 
+
+echo "Stage 1 - Complete"
+sleep 2;
+
+#SubDomainizer
+python3 /home/ferramentas/SubDomainizer/SubDomainizer.py -u https://$alvo -o etapa2
+
+echo "Stage 2 - Complete"
+sleep 2;
+
+#Subginder + Findomain
+subfinder -d $alvo  -silent | httpx -silent -threads 1000 | xargs -I@ sh -c 'findomain-linux -t @ -q | httpx -mc 200 -silent | anew | waybackurls | anew etapa3t'
+
+echo "Stage 3 - Complete"
+sleep 2;
+
+#Virustotal+certspotter+rapiddns+riddler+jldc+crt+dns.bufferover
+curl -s "https://www.virustotal.com/ui/domains/$alvo/subdomains?limit=40" | grep -Po "((http|https):\/\/)?(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >> TARGET-virustotal.txt;curl -s "https://certspotter.com/api/v0/certs?domain=$alvo" | grep -Po "((http|https):\/\/)?(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >> TARGET-certspotter.txt;
+curl -s "https://rapiddns.io/subdomain/$alvo?full=1#result" | awk -v RS='<[^>]+>' '/$1/' | sort -u >>TARGET-rapiddns.txt;curl -s "https://rapiddns.io/subdomain/$alvo?full=1#result" | awk -v RS='<[^>]+>' '/$1/' | sort -u >>TARGET-rapiddns.txt;curl -s "https://riddler.io/search/exportcsv?q=pld:$alvo" | grep -Po "(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >>TARGET-riddler.txt;curl -s "https://jldc.me/anubis/subdomains/$alvo" | grep -Po "((http|https):\/\/)?(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >>TARGET-jldc.txt;curl -s "https://crt.sh/?q=%25.$alvo&output=json" | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >>TARGET-crt.txt;curl -s "https://dns.bufferover.run/dns?q=.$alvo" | jq -r .FDNS_A[] | sed -s 's/,/\\n/g'  | sort -u  >>TARGET-bufferover.txt;cat TARGET-*.txt | sort -u >TARGET.txt;cat TARGET.txt -n
+
+echo "Stage 4 - Complete"
+sleep 2; 
+
+#subfinder+assetfinder+amass+subjack
+subfinder -d $alvo >> etapa5 ; assetfinder -subs-only $alvo >> etapa5 ; amass enum -norecursive -noalts -d $alvo >> etapa5 ; subjack -w etapa5 -t 100 -timeout 30 -ssl -c ~/fingerprints.json -v 3 >> takeoveretapa5
+
+echo "Stage 5 - Complete"
+sleep 2;
+
+#Assetfinder
+assetfinder --subs-only $alvo | anew etapa6
+
+echo "Stage 6 - Complete"
+sleep 2;
+
+#Gospider
+gospider -d 0 -s "https://$alvo" -c 5 -t 100 -d 5 --blacklist jpg,jpeg,gif,css,tif,tiff,png,ttf,woff,woff2,ico,pdf,svg,txt | grep -Eo '(http|https)://[^/"]+' | anew etapa7
+
+echo "Stage 7 - Complete"
+sleep 2;
+
+
+#Filter domains
+cat etapa* TARGET.txt |  anew subdominio
+
+echo "Stage SUBDOMINIO-FILTER - Complete"
+
+sleep 4;
+
+echo "STAGE - RECON DO REDON"
+
+#Recon do recon
+
+findomain-linux -f subdominio -q -u subdominio1
+
+echo "Stage subdominio1 - Complete"
+
+sleep 2;
+
+xargs -a subdominio -I@ -P5 sh -c 'assetfinder @ | anew subdominio2'
+
+sleep 2;
+
+xargs -a subdominio -I@ -P5 sh -c 'echo @' | dnsgen - | httpx -silent -threads 500 | anew subdominio3
+
+sleep 2;
+
+varsub=$(mkdir subdominio)
+cat subdominio* | grep "$alvo" | anew subdominio/subdominiocompleto
+
+#Massdns
+varmassdns=$(mkdir massdns)
+sleep 2;
+massdns -r /home/ferramentas/massdns/resolvers.txt -t AAAA subdominiocompleto >> massdns/massdnscompleto
+
+echo "Recon the Recon subdominio finish!"
+

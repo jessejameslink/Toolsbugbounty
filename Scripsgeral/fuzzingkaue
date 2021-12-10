@@ -1,0 +1,130 @@
+#!/bin/bash
+echo -e
+echo -e
+echo -e
+echo "''########:'##::::'##:'########:'########:'####:'##::: ##::'######:::'##:::'##::::'###::::'##::::'##:'########:";
+echo "' ##.....:: ##:::: ##:..... ##::..... ##::. ##:: ###:: ##:'##... ##:: ##::'##::::'## ##::: ##:::: ##: ##.....::";
+echo "' ##::::::: ##:::: ##::::: ##::::::: ##:::: ##:: ####: ##: ##:::..::: ##:'##::::'##:. ##:: ##:::: ##: ##:::::::";
+echo "' ######::: ##:::: ##:::: ##::::::: ##::::: ##:: ## ## ##: ##::'####: #####::::'##:::. ##: ##:::: ##: ######:::";
+echo "' ##...:::: ##:::: ##::: ##::::::: ##:::::: ##:: ##. ####: ##::: ##:: ##. ##::: #########: ##:::: ##: ##...::::";
+echo "' ##::::::: ##:::: ##:: ##::::::: ##::::::: ##:: ##:. ###: ##::: ##:: ##:. ##:: ##.... ##: ##:::: ##: ##:::::::";
+echo "' ##:::::::. #######:: ########: ########:'####: ##::. ##:. ######::: ##::. ##: ##:::: ##:. #######:: ########:";
+echo "'..:::::::::.......:::........::........::....::..::::..:::......::::..::::..::..:::::..:::.......:::........::";
+echo -e
+echo -e
+echo -e
+
+sleep 2;
+echo "Loading..."
+sleep 1;
+
+printf "Author: Kaue Navarro\n"
+echo -e
+printf  "FuzzingKaue https://github.com/Kaue-Navarro\n"
+echo -e
+echo -e "####### Exemplo de Uso ######"
+echo -e
+echo -e "    Fuzzingkaue url     "
+echo -e
+echo -e
+
+alvo="$1"
+delay="0.3-4.0"
+echo -e
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/403_url_payloads.txt -u $alvo/FUZZ -p "0.5-5.0" -c -mc 200,302 -od ffuf1
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/adminer.txt -u "$alvo"FUZZ -c  -mc 200,302 -od ffuf2
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/all-files-leaked.txt -u "$alvo"FUZZ -c  -mc 200,302 -od ffuf3
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/api.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf4
+sleep 2; 
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/backup_files_only.txt -u $alvo/FUZZ -c -mc 200,302 -od ffuf5
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/backup_files_with_path.txt -u $alvo/FUZZ -c -mc 200,302 -od ffuf6
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/config.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf7
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/cve-paths.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf8
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/directory_only_one.small.txt  -u $alvo/FUZZ -c -mc 200,302 -od ffuf9
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/dotfiles.txt  -u $alvo/FUZZ -c -mc 200,302 -od ffuf10
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/ec2.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf11
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/env.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf12
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/fuzz.txt  -u $alvo/FUZZ -c -mc 200,302 -od ffuf13
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/git_config.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf14
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/juicy-paths.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf15
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/leaky-misconfigs.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf16
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/log.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf17
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/ngnix.txt  -u $alvo/FUZZ -c -mc 200,302 -od ffuf18
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/open-redirects.txt  -u $alvo/FUZZ -c -mc 200,302 -od ffuf19
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/php_files_only.txt  -u $alvo/FUZZ -c -mc 200,302 -od ffuf20
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/phpmyadmin.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf21
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/sql.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf22
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/tomcat.txt  -u $alvo/FUZZ -c -mc 200,302 -od ffuf23
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/webconfig.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf24
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/windows-lfi.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf25
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/wordpress-random.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf26
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/wp-content.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf27
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/BUG-BOUNTY-WORDLISTS/Bug-Bounty-Wordlists/yaml.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf28
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/URLs/urls-Drupal-7.20.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf29
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/SecLists/Fuzzing/LFI/LFI-Jhaddix.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf30
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/CMS/sitecore  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf31
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/Apache.fuzz.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf32
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/URLs/urls-SAP.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf33
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/AdobeCQ-AEM.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf34
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/Common-DB-Backups.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf35
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/IIS.fuzz.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf36
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/apache.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf37
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/raft-large-directories.txt   -u "$alvo"/FUZZ -c -mc 200,302 -od ffuf38
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Fuzzing/HTML5sec-Injections-Jhaddix.txt  -u "$alvo"/FUZZ -c -mc 200,302 -od ffuf39
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Fuzzing/fuzz-Bo0oM.txt   -u "$alvo"/FUZZ -c -mc 200,302 -od ffuf40
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/gitwordlist  -u "$alvo"/FUZZ -c -mc 200,302 -od ffuf41
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Fuzzing/Windows-Attacks.fuzzdb.txt  -u "$alvo"FUZZ -c -mc 200,302 -od ffuf42
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/dirsearch.txt  -u "$alvo"/FUZZ -c -mc 200,302 -od ffuf43
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/graphql.txt  -u "$alvo"/FUZZ -c -mc 200 -od ffuf44
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/spring-boot.txt  -u "$alvo"/FUZZ -c -mc 200 -od ffuf45
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/backupwordlist  -u "$alvo"/FUZZ -c -mc 200,403 -od ffuf46
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/wordlist1  -u "$alvo"/FUZZ -c -mc 200,403 -od ffuf47
+
+#cd ..
+

@@ -1,0 +1,53 @@
+#!/bin/bash
+echo -e
+echo -e
+echo -e
+echo "::::::'##::'######::'########::'#######::'##::::'##::::'###::::'########:'####::'######::";
+echo ":::::: ##:'##... ##:... ##..::'##.... ##: ###::'###:::'## ##:::... ##..::. ##::'##... ##:";
+echo ":::::: ##: ##:::..::::: ##:::: ##:::: ##: ####'####::'##:. ##::::: ##::::: ##:: ##:::..::";
+echo ":::::: ##:. ######::::: ##:::: ##:::: ##: ## ### ##:'##:::. ##:::: ##::::: ##:: ##:::::::";
+echo "'##::: ##::..... ##:::: ##:::: ##:::: ##: ##. #: ##: #########:::: ##::::: ##:: ##:::::::";
+echo " ##::: ##:'##::: ##:::: ##:::: ##:::: ##: ##:.:: ##: ##.... ##:::: ##::::: ##:: ##::: ##:";
+echo ". ######::. ######::::: ##::::. #######:: ##:::: ##: ##:::: ##:::: ##::::'####:. ######::";
+echo ":......::::......::::::..::::::.......:::..:::::..::..:::::..:::::..:::::....:::......:::";
+
+sleep 2;
+echo "Loading..."
+sleep 1;
+
+printf "Author: Kaue Navarro\n"
+echo -e
+printf  "Jstomic https://github.com/kauenavarroBR\n"
+echo -e
+echo -e "####### Exemplo de Uso ######"
+echo -e
+echo -e "     Jstomatic dominio     "
+echo -e
+echo -e
+
+alvo="$1"
+echo "Stage recon JS"
+echo -e
+echo -e
+
+#waybackurls
+waybackurls $alvo | grep -iE "\.js$" | uniq | sort | anew >> js ;gau -subs $alvo | grep "\.js$" | grep -iE '\js'|grep -iEv '(\.jsp|\.json)'| sort -u >> js
+sleep 2;
+cat ../subdominios/subdomainvalidate | waybackurls |  grep -E "\.json(?:onp?)?$^" | anew   >> stage1json
+sleep 2;
+cat ../subdominios/subdomainvalidate | waybackurls |  grep -E "\.js(?:onp?)?$" | anew  >>  js
+sleep 2;
+assetfinder -subs-only $alvo -silent  | httpx -timeout 2 -threads 300 --follow-redirects -silent | xargs -I% -P10 sh -c 'hakrawler -plain -linkfinder -depth 5 -url %' | awk '{print $3}' | grep -E "\.js(?:onp?)?$" | anew >>  js
+sleep 2;
+assetfinder -subs-only $alvo -silent | httpx -timeout 3 -threads 300 --follow-redirects -silent | xargs -I% -P10 sh -c 'hakrawler -plain -linkfinder -depth 5 -url %' | grep "$alvo" | anew >> js;
+sleep 2;
+cat ../urls/urlscomplete | subjs | anti-burl |  grep -Eo '(http|https)://[^/"].*' | anew  >>  js
+sleep 2;
+cat ../subdominios/subdomainvalidate  | waybackurls | getJS --complete --resolve | anew >> js
+sleep 2;
+xargs -P 100 -a ../subdominios/subdomainvalidate -I@ sh -c 'nc -w1 -z -v @ 443 2>/dev/null && echo @' | xargs -I@ -P10 sh -c 'gospider -a -s "https://@" -d 2 | ls| sed "s#\] \- #\n#g" | anew >>  js'
+sleep 2;
+gospider -s https://$alvo --js | grep -E "\.js(?:onp?)?$" | awk '{print $4}' | tr -d "[]" | anew >>  js
+sleep 2;
+
+echo "Recon the JS finish!"

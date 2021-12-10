@@ -1,0 +1,212 @@
+#!/bin/bash
+echo -e
+echo -e
+echo -e
+
+echo "'##::::'##:'########::'##:::::::'########::'#######::'##::::'##::::'###::::'########:'####::'######::";
+echo " ##:::: ##: ##.... ##: ##:::::::... ##..::'##.... ##: ###::'###:::'## ##:::... ##..::. ##::'##... ##:";
+echo " ##:::: ##: ##:::: ##: ##:::::::::: ##:::: ##:::: ##: ####'####::'##:. ##::::: ##::::: ##:: ##:::..::";
+echo " ##:::: ##: ########:: ##:::::::::: ##:::: ##:::: ##: ## ### ##:'##:::. ##:::: ##::::: ##:: ##:::::::";
+echo " ##:::: ##: ##.. ##::: ##:::::::::: ##:::: ##:::: ##: ##. #: ##: #########:::: ##::::: ##:: ##:::::::";
+echo " ##:::: ##: ##::. ##:: ##:::::::::: ##:::: ##:::: ##: ##:.:: ##: ##.... ##:::: ##::::: ##:: ##::: ##:";
+echo ". #######:: ##:::. ##: ########:::: ##::::. #######:: ##:::: ##: ##:::: ##:::: ##::::'####:. ######::";
+echo ":.......:::..:::::..::........:::::..::::::.......:::..:::::..::..:::::..:::::..:::::....:::......:::";
+
+sleep 2;
+echo "Loading..."
+sleep 1;
+
+printf "Author: Kaue Navarro\n"
+echo -e
+printf  "Urltomic https://github.com/kauenavarroBR\n"
+echo -e
+echo -e "####### Exemplo de Uso ######"
+echo -e
+echo -e "     Urltomatic dominio     "
+echo -e
+echo -e
+
+alvo="$1"
+mkdir $1
+cd $1
+#Amass + crt
+amass enum -src -ip -active -brute -d "$alvo"  -o amass1 ; cat  amass1 | cut -d']' -f 2 | awk '{print $1}' | sort -u >> stage1 ;
+
+sleep 2;
+echo "Stage 1 - Complete - Were found $var1"
+
+echo -e
+echo -e
+#SubDomainizer
+python3 /home/ferramentas/SubDomainizer/SubDomainizer.py -u "https://$alvo" -o stage2
+
+
+echo "Stage 2 - Complete - Were found $var2"
+sleep 2;
+echo -e
+echo -e
+#Subginder + Findomain
+python3 /home/ferramentas/github-search/github-subdomains.py -t 2cd6526f814274d5dde880703759c61dcd37f846  -d  "$alvo"  | grep -v '[>]' | anew stage3
+
+
+
+echo "Stage 3 - Complete - Were found $var3"
+sleep 2;
+echo -e
+echo -e
+
+#Virustotal+certspotter+rapiddns+riddler+jldc+crt+dns.bufferover
+curl -s "https://www.virustotal.com/ui/domains/$alvo/subdomains?limit=40" | grep -Po "((http|https):\/\/)?(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >> TARGET-virustotal.txt;curl -s "https://certspotter.com/api/v0/certs?domain=$alvo" | grep -Po "((http|https):\/\/)?(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >> TARGET-certspotter.txt;
+curl -s "https://rapiddns.io/subdomain/$alvo?full=1#result" | awk -v RS='<[^>]+>' '/$1/' | sort -u >>TARGET-rapiddns.txt;curl -s "https://rapiddns.io/subdomain/$alvo?full=1#result" | awk -v RS='<[^>]+>' '/$1/' | sort -u >>TARGET-rapiddns.txt;curl -s "https://riddler.io/search/exportcsv?q=pld:$alvo" | grep -Po "(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >>TARGET-riddler.txt;curl -s "https://jldc.me/anubis/subdomains/$alvo" | grep -Po "((http|https):\/\/)?(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >>TARGET-jldc.txt;curl -s "https://crt.sh/?q=%25.$alvo&output=json" | jq -r '.[].name_value' | sed 's/\*\.//g' | sort -u >>TARGET-crt.txt;curl -s "https://dns.bufferover.run/dns?q=.$alvo" | jq -r .FDNS_A[] | sed -s 's/,/\\n/g'  | sort -u  >>TARGET-bufferover.txt;cat TARGET-*.txt | sort -u > stage4;
+
+var4=$(wc -l stage4)
+
+echo "Stage 4 - Complete - Were found $var4"
+sleep 2; 
+echo -e
+echo -e
+#subfinder+assetfinder+amass+subjack
+subfinder -d "$alvo" >> stage5 ; assetfinder -subs-only "$alvo" >> stage5 ; amass enum -norecursive -noalts -d "$alvo" >> stage5 ;
+
+echo "Stage 5 - Complete - Were found $var5 and Takeover $var5take"
+sleep 2;
+echo -e
+echo -e
+#Assetfinder
+
+#JLDC
+curl -s "https://jldc.me/anubis/subdomains/$alvo" | grep -Po "((http|https):\/\/)?(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | anew stage6
+
+
+echo "Stage 6 - Complete - Were found $var8"
+
+sleep 2;
+
+echo -e
+echo -e
+
+
+#Filter domains
+cat stage*  |  anew subdomain
+
+echo "Stage SUBDOMAIN-FILTER - Complete"
+sleep 2;
+echo -e
+echo -e
+
+#Recon do recon
+#findomain-linux -f subdomain -r -u subdomain1
+
+echo "Stage subdomains - Complete"
+
+sleep 2;
+echo -e
+echo -e
+
+echo "Stage recon urls"
+echo -e
+echo -e
+
+#waybackurls
+cat subdomain | waybackurls | anew stageurl1;
+sleep 2;
+#gau
+cat subdomain | gau | anew stageurl2;
+sleep 2;
+#otxurls
+cat subdomain | otxurls | anew stageurl3;
+sleep 2;
+#assetfinder+httpx+hakwawler
+assetfinder -subs-only $alvo -silent | httpx -timeout 3 -threads 300 --follow-redirects -silent | xargs -I% -P10 sh -c 'hakrawler -plain -linkfinder -depth 5 -url %' | grep "$alvo" | anew >> stageurl4;
+#echo "Stage recon - Complete"
+sleep 2;
+echo -e
+echo -e
+#NUCLEI
+nuclei -u http://$alvo -t headless/extract-urls.yaml -headless -silent | grep "^http" | anew stageurl5
+sleep 2;
+echo -e
+echo -e
+
+cat stageurl* | anti-burl | grep -Eo '(http|https)://[^/"].*'| anew urlscomplete
+sleep 2;
+echo "Recon the Urls finish! - Were found $varfinish"
+
+#stage gf
+
+mkdir gfsurls
+sleep 3;
+echo -e
+echo "Loading gf..."
+sleep 2;
+cat urlscomplete | gf aws-keys | anew gfsurls/saidaaws-keys.txt
+sleep 2;
+#cat urlscomplete | gf base64 | anew gfsurls/saidabase64.txt
+sleep 2;
+cat urlscomplete | gf cors | anew gfsurls/saidacors.txt
+sleep 2;
+cat urlscomplete | gf debug_logic| anew gfsurls/saidadebug_logic.txt
+sleep 2;
+cat urlscomplete | gf debug-pages  | anew gfsurls/saidadebug-pages .txt
+sleep 2;
+#cat urlscomplete | gf fw     | anew gfsurls/saidafw.txt
+#sleep 2;
+cat urlscomplete | gf go-functions | anew gfsurls/aidago-functions.txt
+sleep 2;
+cat urlscomplete | gf http-auth | anew gfsurls/saidahttp-auth.txt
+sleep 2;
+cat urlscomplete | gf idor | anew gfsurls/saidaidor.txt
+sleep 2;
+cat urlscomplete | gf img-traversal | anew gfsurls/saidaimg-traversal.txt
+sleep 2;
+cat urlscomplete | gf interestingEXT | anew gfsurls/saidainterestingEXT.txt
+sleep 2;
+cat urlscomplete | gf interestingparams | anew gfsurls/saidainterestingparams.txt
+sleep 2;
+cat urlscomplete | gf interestingsubs | anew gfsurls/saidainterestingsubs.txt
+sleep 2;
+cat urlscomplete | gf json-sec | anew gfsurls/saidajson-sec.txt
+sleep 2;
+cat urlscomplete | gf jsvar | anew gfsurls/saidajsvar.txt
+sleep 2;
+cat urlscomplete | gf  lfi  | anew gfsurls/saidalfi .txt
+sleep 2;
+cat urlscomplete | gf meg-headers | anew gfsurls/saidameg-headers.txt
+sleep 2;
+cat urlscomplete | gf php-curl | anew gfsurls/saidaphp-curl.txt
+sleep 2;
+cat urlscomplete | gf php-errors  | anew gfsurls/saidaphp-errors.txt
+sleep 2;
+cat urlscomplete | gf php-serialized | anew gfsurls/saidaphp-serialized.txt
+sleep 2;
+cat urlscomplete | gf  php-sinks | anew gfsurls/saidaphp-sinks.txt
+sleep 2;
+cat urlscomplete | gf php-sources | anew gfsurls/saidaphp-sources.txt
+sleep 2;
+cat urlscomplete | gf rce | anew gfsurls/saidarce.txt
+sleep 2;
+cat urlscomplete | gf redirect | anew gfsurls/saidaredirects.txt
+sleep 2;
+cat urlscomplete | gf s3-buckets | anew gfsurls/saidas3-buckets.txt
+sleep 2;
+#cat urlscomplete | gf sec | anew gfsurls/saidasec.txt
+#sleep 2;
+cat urlscomplete | gf servers | anew gfsurls/saidaservers.txt
+sleep 2;
+cat urlscomplete | gf sqli | anew gfsurls/saidasqli.txt
+sleep 2;
+cat urlscomplete | gf ssrf | anew gfsurls/saidassrf.txt
+sleep 2;
+cat urlscomplete | gf ssti | anew gfsurls/saidassti.txt
+sleep 2;
+#cat urlscomplete | gf urls | anew gfsurls/saidaurls.txt
+sleep 2;
+cat urlscomplete | gf upload-fields | anew gfsurls/saidaupload-fields.txt
+sleep 2;
+cat urlscomplete | gf takeovers | anew gfsurls/saidatakeovers.txt
+sleep 2;
+cat urlscomplete | gf xss | anew gfsurls/saidaxss.txt
+sleep 2;
+#Stage GFS - completed
+echo "Stage GFS - completed"
+cd ..

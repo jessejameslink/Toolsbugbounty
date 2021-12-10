@@ -1,0 +1,47 @@
+#!/bin/bash
+echo -e
+echo -e
+echo -e
+echo "'########::'########::'######:::'#######::'##::: ##:'##:::'##::::'###::::'##::::'##:'########:";
+echo " ##.... ##: ##.....::'##... ##:'##.... ##: ###:: ##: ##::'##::::'## ##::: ##:::: ##: ##.....::";
+echo " ##:::: ##: ##::::::: ##:::..:: ##:::: ##: ####: ##: ##:'##::::'##:. ##:: ##:::: ##: ##:::::::";
+echo " ########:: ######::: ##::::::: ##:::: ##: ## ## ##: #####::::'##:::. ##: ##:::: ##: ######:::";
+echo " ##.. ##::: ##...:::: ##::::::: ##:::: ##: ##. ####: ##. ##::: #########: ##:::: ##: ##...::::";
+echo " ##::. ##:: ##::::::: ##::: ##: ##:::: ##: ##:. ###: ##:. ##:: ##.... ##: ##:::: ##: ##:::::::";
+echo " ##:::. ##: ########:. ######::. #######:: ##::. ##: ##::. ##: ##:::: ##:. #######:: ########:";
+echo "..:::::..::........:::......::::.......:::..::::..::..::::..::..:::::..:::.......:::........::";
+echo -e
+echo -e
+echo -e
+
+sleep 2;
+echo "Loading..."
+sleep 1;
+
+printf "Author: Kaue Navarro\n"
+echo -e
+printf  "reconkaue https://github.com/kauenavarroBR\n"
+echo -e
+echo -e "####### Exemplo de Uso ######"
+echo -e
+echo -e "    reconkaue dominio     "
+echo -e
+echo -e
+
+alvo="$1"
+#echo $alvodir
+#mkdir $alvodir
+#cd $alvodir
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/gitwordlist -u $alvo/FUZZ -c -mc 200,302 -od ffuf1
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/tomcat.txt -u $alvo/FUZZ -c  -mc 200,302 -od ffuf2
+sleep 2;
+ffuf -w  /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/URLs/urls-Drupal-7.20.txt -u $alvo/FUZZ -c -ac -mc 200,302 -od ffuf3
+sleep 2;
+ffuf -w /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/big.txt  -u $alvo/FUZZ -c -ac -mc 200,302 -od ffuf4
+sleep 2; 
+ffuf -w /home/ferramentas/WORDLISTS/SecLists/Discovery/Web-Content/CMS/wordpress.fuzz.txt -u $alvo/FUZZ -c -ac -mc 200,302 -od ffuf5
+sleep 2;
+
+#cd ..

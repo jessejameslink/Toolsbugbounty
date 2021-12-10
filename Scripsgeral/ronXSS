@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#Banner
+#figlet -c -f Bloody "ronXSS" | lolcat
+#echo ""
+#echo -e "* Github: https://github.com/ron020/ \n* Created by ron020 \n* Version 1.0" | lolcat
+
+if [ "$1" == "" ]
+then
+echo "* Usage: $0 domain" | lolcat
+echo "* Example: $0 google.com" | lolcat
+
+exit
+fi
+
+mkdir $1
+cd $1
+
+#Subdomains + Waybackurls
+subfinder -d $1  -silent | httpx -silent -threads 1000 | xargs -I@ sh -c 'findomain -t @ -q | httpx -mc 200 -silent | anew | waybackurls | anew sub.txt'
+cat sub.txt | grep "=" > subdomains.txt
+
+#Parameters with paramspider.py
+python3 /home/ferramentas/ParamSpider/paramspider.py -d $1 -o parametersFUZZ.txt
+cat output/parametersFUZZ.txt | httpx -mc 200 -silent | sed 's/FUZZ//' > parameters.txt
+clear
+
+
+#Banner
+#figlet -c -f Bloody "ronXSS" | lolcat
+#echo -e "* Github: https://github.com/ron020/ \n* Created by ron020 \n* Version 1.0 \n* Testing XSS \n* Target: $1 \n* Wait for the result ..." | lolcat
+
+#Test XSS 01
+dalfox -b kauenavarro.xss.ht --ignore-return 301,302,403,404,500,502 file subdomains.txt -o resultXss01
+#dalfox -b ron020.xss.ht --ignore-return 301,302,403,404,500,502 file subdomains.txt --custom-payload ../payloads/./xss-wordlist.txt -o resultXss01
+
+#Test XSS 02
+dalfox -b kauenavarro.xss.ht --ignore-return 301,302,403,404,500,502 file parameters.txt -o resultXss02
+#dalfox -b ron020.xss.ht --ignore-return 301,302,403,404,500,502 file parameters.txt --custom-payload ../payloads/./xss-wordlist.txt -o resultXss02
+
+
