@@ -11,10 +11,10 @@ if (( "$TIME" >= "20" )); then
 
         echo -e "Url  \e[36m${url} \e[0m Status  => \e[32m é VULNERAVEL A SQLI TIME BASED \e[0m" | notify -discord-username SQLITIMEBASED
 
-        var2=$(echo "https://t.me/joinchat/$url" > valuedinvalues.txt)
+        
 else
         echo -e "Url  \e[36m${url} \e[0m Status  => \e[31m não É VULNERAVEL A SQLI TIME BASED \e[0m"
-        var1=$(echo "https://t.me/joinchat/$url" > validvalues.txt)
+       
 
 fi
 
