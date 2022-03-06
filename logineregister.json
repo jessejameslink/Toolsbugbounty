@@ -22,6 +22,8 @@
         "cadastro",
         "createAccount",
         "Authenticate",
+        "Singnin",
+        "signin",
         "authenticate"
 ]
 }
