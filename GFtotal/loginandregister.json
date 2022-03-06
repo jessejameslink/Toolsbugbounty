@@ -24,7 +24,9 @@
         "Authenticate",
         "Singnin",
         "signin",
-        "sign_in", 
+        "sign_in",
+        "signup",
+        "Signup", 
         "authenticate"
 ]
 }
